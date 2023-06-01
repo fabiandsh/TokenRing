@@ -19,7 +19,7 @@ public class TokenRingSimulation extends JFrame {
     private Token token;
     private Token messagetoken;
     private boolean thereIsMessage;
- 
+    private Color colorback =  new Color(50, 130, 184);
     
     public TokenRingSimulation() {
         super("Token Ring Simulation");
@@ -28,38 +28,78 @@ public class TokenRingSimulation extends JFrame {
         stopButton = new JButton("Detener");
         resetButton = new JButton("Reiniciar");
         numHostsTextField = new JTextField(5);
-        messageTextField = new JTextField(20);
+        messageTextField = new JTextField(10);
         senderTextField = new JTextField(5);
         receiverTextField = new JTextField(5);
         tokenPanel = new JPanel();
         
         JPanel buttonPanel = new JPanel();
-        buttonPanel.add(new JLabel("Número de Hosts:"));
+        JLabel numHostLabel = new JLabel("Número de Hosts:");
+        numHostLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        numHostLabel.setForeground(Color.WHITE);
+        buttonPanel.add(numHostLabel);
         buttonPanel.add(numHostsTextField);
         buttonPanel.add(startButton);
         buttonPanel.add(stopButton);
         buttonPanel.add(resetButton);
 
         JPanel messagePanel = new JPanel();
-        messagePanel.setLayout(new GridLayout(8, 1));
-        messagePanel.add(new JLabel("Mensaje a enviar:"));
+        messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
+        messagePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        JLabel titleMLable =new JLabel("Configuración Mensaje:");
+        titleMLable.setFont(new Font("Arial", Font.BOLD, 16));
+        messagePanel.add(titleMLable);
+        messagePanel.add(new JLabel(" "));
+        messagePanel.add(new JLabel(" "));
+        messagePanel.add(new JLabel(" "));
+        JLabel messaggeLabel =new JLabel("Mensaje a enviar:");
+        messaggeLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        messagePanel.add(messaggeLabel);
+        messagePanel.add(new JLabel(" "));
         messagePanel.add(messageTextField);
-        messagePanel.add(new JLabel("Emisor:"));
+        JLabel emiLabel =new JLabel("Emisor:");
+        emiLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        messagePanel.add(new JLabel(" "));
+        messagePanel.add(new JLabel(" "));
+        messagePanel.add(emiLabel);
+        messagePanel.add(new JLabel(" "));
         messagePanel.add(senderTextField);
-        messagePanel.add(new JLabel("Receptor:"));
+        JLabel reLabel =new JLabel("Receptor:");
+        reLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        messagePanel.add(new JLabel(" "));
+        messagePanel.add(new JLabel(" "));
+        messagePanel.add(reLabel);
+        messagePanel.add(new JLabel(" "));
         messagePanel.add(receiverTextField);
+        messagePanel.add(new JLabel(" "));
+        messagePanel.add(new JLabel(" "));
+        messagePanel.add(new JLabel(" "));
+        messagePanel.add(new JLabel(" "));
+        
 
+        JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        JLabel labelTitle = new JLabel("SIMULADOR TOKEN-RING");
+        labelTitle.setFont(new Font("Arial", Font.BOLD, 20));
+        labelTitle.setForeground(Color.WHITE);
+        titlePanel.add(labelTitle);
         
         
         mainPanel = new JPanel();
+        mainPanel.setBackground(Color.WHITE);
         mainPanel.setLayout(new BorderLayout());
+        tokenPanel.setBackground(Color.WHITE);
+        buttonPanel.setBackground(colorback);
+        messagePanel.setBackground(Color.WHITE);
+        titlePanel.setBackground(colorback);
+        mainPanel.add(titlePanel, BorderLayout.NORTH);
         mainPanel.add(tokenPanel, BorderLayout.WEST);
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         mainPanel.add(messagePanel,  BorderLayout.EAST);
         
         getContentPane().add(mainPanel);
         
-        setSize(700, 500);
+        setSize(800, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         
@@ -123,6 +163,7 @@ public class TokenRingSimulation extends JFrame {
     private void createTokenPanel(int numHosts) {
         tokenPanel.removeAll();
         tokenPanel.setLayout(new BoxLayout(tokenPanel, BoxLayout.Y_AXIS));
+
         
         statusTextArea = new JTextArea(10, 20);
         statusTextArea.setEditable(false);
@@ -130,12 +171,16 @@ public class TokenRingSimulation extends JFrame {
 
         statusPanel = new JPanel();
         statusPanel.setLayout(new BorderLayout());
+        statusScrollPane.setBackground(colorback);
         statusPanel.add(statusScrollPane, BorderLayout.CENTER);
     
         mainPanel.add(statusPanel, BorderLayout.CENTER);
-
+        JLabel label = new JLabel(" ");
+        tokenPanel.add(label);
         for (int i = 0; i < numHosts; i++) {
-            JLabel label = new JLabel("Host " + i);
+            label = new JLabel("   Host " + i +"   ");
+            label.setFont(new Font("Arial", Font.BOLD, 18));
+            label.setBackground(colorback);
             label.setForeground(Color.GRAY);
             label.setAlignmentX(Component.LEFT_ALIGNMENT);
             tokenPanel.add(label);
@@ -154,10 +199,10 @@ public class TokenRingSimulation extends JFrame {
         }
         
         JLabel currentLabel = (JLabel) components[currentHost];
-        currentLabel.setForeground(Color.RED);
-
+        currentLabel.setForeground(colorback);
+        tokenPanel.repaint();
         statusTextArea.append("Token: "+ token.toString() +"\n");
-        statusTextArea.append("Pasó el token al Host " + currentHost + "\n"); 
+        statusTextArea.append("Pasando el token al Host " + currentHost + "\n"); 
         this.adminToken(currentHost);
     }
 
@@ -179,7 +224,7 @@ public class TokenRingSimulation extends JFrame {
                 token =  ((Token) messagetoken.clone());
                 messagetoken.cleanToken();
             }else if(token.getDestinatioAddress().equals(this.changeNumberToBinary(currentHost,8))){
-                statusTextArea.append("El host" + currentHost + " copia el contenido del token para procesar\n"); 
+                statusTextArea.append("El host " + currentHost + " copia el contenido del token para su procesamiento\n"); 
                 token.setFrameStatus(this.changeNumberToBinary(1,1));
             }else if(token.getSourceAddres().equals(this.changeNumberToBinary(currentHost,8)) ){
                 statusTextArea.append("El host " + currentHost + " verifica envio, limpia el token\n"); 
